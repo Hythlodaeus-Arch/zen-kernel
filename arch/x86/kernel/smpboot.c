@@ -369,6 +369,7 @@ static void primarily_use_numa_for_topology(void)
 	set_sched_topology(numa_inside_package_topology);
 }
 
+extern int sched_max_numa_distance;
 void set_cpu_sibling_map(int cpu)
 {
 	bool has_smt = smp_num_siblings > 1;
@@ -429,7 +430,12 @@ void set_cpu_sibling_map(int cpu)
 			} else if (i != cpu && !c->booted_cores)
 				c->booted_cores = cpu_data(i).booted_cores;
 		}
+#ifndef CONFIG_NUMA
 		if (match_die(c, o) && !topology_same_node(c, o))
+#else
+        if (match_die(c, o) && !topology_same_node(c, o)
+            && sched_max_numa_distance == -1)
+#endif
 			primarily_use_numa_for_topology();
 	}
 }
