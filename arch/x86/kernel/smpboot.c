@@ -369,7 +369,10 @@ static void primarily_use_numa_for_topology(void)
 	set_sched_topology(numa_inside_package_topology);
 }
 
+#ifdef CONFIG_NUMA
 extern int sched_max_numa_distance;
+#endif
+
 void set_cpu_sibling_map(int cpu)
 {
 	bool has_smt = smp_num_siblings > 1;
